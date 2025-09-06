@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aptitude Mastery Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 20px;
+            line-height: 1.6;
+        }
+
+        .progress-summary {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .progress-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+            min-width: 150px;
+        }
+
+        .progress-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .progress-card p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            margin: 0 auto 40px;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .roadmap {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 8px solid;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .section.quantitative {
+            border-left-color: #4CAF50;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(255, 255, 255, 1) 50%);
+        }
+
+        .section.logical {
+            border-left-color: #FF9800;
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.05) 0%, rgba(255, 255, 255, 1) 50%);
+        }
+
+        .section.verbal {
+            border-left-color: #9C27B0;
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.05) 0%, rgba(255, 255, 255, 1) 50%);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .section-icon {
+            font-size: 3em;
+            padding: 15px;
+            border-radius: 15px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .quantitative .section-icon {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .logical .section-icon {
+            background: linear-gradient(135deg, #FF9800, #f57c00);
+        }
+
+        .verbal .section-icon {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+        }
+
+        .section-title {
+            flex: 1;
+        }
+
+        .section-title h2 {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .section-progress {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quantitative .progress-circle {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .logical .progress-circle {
+            background: linear-gradient(135deg, #FF9800, #f57c00);
+        }
+
+        .verbal .progress-circle {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+        }
+
+        .progress-text {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .topic-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #f0f0f0;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            backdrop-filter: blur(5px);
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border-color: #ddd;
+        }
+
+        .topic-card.completed {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(255, 255, 255, 0.9));
+            border-color: #4CAF50;
+        }
+
+        .topic-card.completed::before {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            color: #4CAF50;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .topic-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-container {
+            position: relative;
+            margin-top: 5px;
+        }
+
+        .checkbox {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .checkbox:checked {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-color: #4CAF50;
+        }
+
+        .checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .topic-content h3 {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .subtopics {
+            list-style: none;
+            color: #666;
+        }
+
+        .subtopics li {
+            padding: 4px 0;
+            font-size: 0.95em;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .subtopics li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #999;
+            font-weight: bold;
+        }
+
+        .celebration {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(76, 175, 80, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        .celebration.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .motivational-quote {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 40px;
+            font-style: italic;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .study-tips {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .study-tips h3 {
+            color: #d35400;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .study-tips ul {
+            color: #8b4513;
+            line-height: 1.6;
+        }
+
+        .study-tips li {
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .topics-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .progress-summary {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate(-50%, -50%) scale(1); }
+            40%, 43% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .celebration.bounce {
+            animation: bounce 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Aptitude Mastery Tracker</h1>
+            <p>Your comprehensive roadmap to crack company aptitude rounds. Track your progress, stay motivated, and achieve success!</p>
+        </div>
+
+        <div class="motivational-quote">
+            "Success is not final, failure is not fatal: it is the courage to continue that counts. Every topic you master brings you closer to your dream job!" 💪
+        </div>
+
+        <div class="progress-summary">
+            <div class="progress-card">
+                <h3 id="overallProgress">0%</h3>
+                <p>Overall Progress</p>
+            </div>
+            <div class="progress-card">
+                <h3 id="completedTopics">0</h3>
+                <p>Topics Completed</p>
+            </div>
+            <div class="progress-card">
+                <h3 id="totalTopics">28</h3>
+                <p>Total Topics</p>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetProgress()">🔄 Reset All Progress</button>
+
+        <div class="study-tips">
+            <h3>🎯 Study Tips for Maximum Efficiency</h3>
+            <ul>
+                <li><strong>Daily Practice:</strong> Dedicate 2-3 hours daily with consistent practice</li>
+                <li><strong>Time Management:</strong> Set timers for each topic - 1.5 min for quant, 45 sec for reasoning</li>
+                <li><strong>Mock Tests:</strong> Take weekly full-length tests to build stamina</li>
+                <li><strong>Error Analysis:</strong> Maintain a mistake diary and review regularly</li>
+                <li><strong>Formula Sheet:</strong> Create quick reference sheets for last-minute revision</li>
+            </ul>
+        </div>
+
+        <div class="roadmap">
+            <!-- Quantitative Aptitude Section -->
+            <div class="section quantitative">
+                <div class="section-header">
+                    <div class="section-icon">🔢</div>
+                    <div class="section-title">
+                        <h2>Quantitative Aptitude</h2>
+                        <p>Master mathematical concepts and numerical problem-solving skills</p>
+                    </div>
+                    <div class="section-progress">
+                        <div class="progress-circle" id="quantProgress">0%</div>
+                        <div class="progress-text">Progress</div>
+                    </div>
+                </div>
+                
+                <div class="topics-grid">
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="number-system">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Number System</h3>
+                                <ul class="subtopics">
+                                    <li>Divisibility Rules</li>
+                                    <li>HCF & LCM</li>
+                                    <li>Remainders</li>
+                                    <li>Prime Numbers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="percentages">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Percentages, Ratio & Proportion</h3>
+                                <ul class="subtopics">
+                                    <li>Percentage Calculations</li>
+                                    <li>Ratio & Proportion</li>
+                                    <li>Averages</li>
+                                    <li>Partnership</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="simplifications">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Simplifications & Approximations</h3>
+                                <ul class="subtopics">
+                                    <li>BODMAS Rule</li>
+                                    <li>Approximation Techniques</li>
+                                    <li>Square Roots & Cube Roots</li>
+                                    <li>Decimal Fractions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="profit-loss">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Profit & Loss</h3>
+                                <ul class="subtopics">
+                                    <li>Basic P&L Concepts</li>
+                                    <li>Discount & Marked Price</li>
+                                    <li>Successive Discounts</li>
+                                    <li>Dishonest Dealers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="interest">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Simple & Compound Interest</h3>
+                                <ul class="subtopics">
+                                    <li>SI Formulas & Applications</li>
+                                    <li>CI Calculations</li>
+                                    <li>Difference between SI & CI</li>
+                                    <li>Investment Problems</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="time-speed-distance">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Time, Speed & Distance</h3>
+                                <ul class="subtopics">
+                                    <li>Speed-Distance-Time Relations</li>
+                                    <li>Relative Speed</li>
+                                    <li>Trains & Platform Problems</li>
+                                    <li>Boats & Streams</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="time-work">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Time & Work</h3>
+                                <ul class="subtopics">
+                                    <li>Work Rate Problems</li>
+                                    <li>Work & Wages</li>
+                                    <li>Group Work</li>
+                                    <li>Efficiency Concepts</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="pipes-cisterns">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Pipes & Cisterns</h3>
+                                <ul class="subtopics">
+                                    <li>Filling & Emptying</li>
+                                    <li>Multiple Pipes</li>
+                                    <li>Leakage Problems</li>
+                                    <li>Efficiency of Pipes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="mixtures">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Mixtures & Alligations</h3>
+                                <ul class="subtopics">
+                                    <li>Mixture Problems</li>
+                                    <li>Alligation Rule</li>
+                                    <li>Replacement of Mixtures</li>
+                                    <li>Concentration Problems</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="permutations">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Permutations & Combinations</h3>
+                                <ul class="subtopics">
+                                    <li>Basic P&C Concepts</li>
+                                    <li>Circular Permutations</li>
+                                    <li>Selection Problems</li>
+                                    <li>Repetition Cases</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="probability">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Probability</h3>
+                                <ul class="subtopics">
+                                    <li>Basic Probability</li>
+                                    <li>Conditional Probability</li>
+                                    <li>Independent Events</li>
+                                    <li>Bayes' Theorem</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="data-interpretation">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Data Interpretation</h3>
+                                <ul class="subtopics">
+                                    <li>Bar Charts & Line Graphs</li>
+                                    <li>Pie Charts</li>
+                                    <li>Tables & Caselets</li>
+                                    <li>Data Analysis</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="geometry">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Geometry & Mensuration</h3>
+                                <ul class="subtopics">
+                                    <li>Basic Geometry</li>
+                                    <li>Area & Perimeter</li>
+                                    <li>Volume & Surface Area</li>
+                                    <li>Coordinate Geometry</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="quantitative">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="algebra">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Algebra</h3>
+                                <ul class="subtopics">
+                                    <li>Linear Equations</li>
+                                    <li>Quadratic Equations</li>
+                                    <li>Inequalities</li>
+                                    <li>Algebraic Expressions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logical Reasoning Section -->
+            <div class="section logical">
+                <div class="section-header">
+                    <div class="section-icon">🧠</div>
+                    <div class="section-title">
+                        <h2>Logical Reasoning</h2>
+                        <p>Develop analytical thinking and logical problem-solving abilities</p>
+                    </div>
+                    <div class="section-progress">
+                        <div class="progress-circle" id="logicalProgress">0%</div>
+                        <div class="progress-text">Progress</div>
+                    </div>
+                </div>
+                
+                <div class="topics-grid">
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="coding-decoding">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Coding-Decoding</h3>
+                                <ul class="subtopics">
+                                    <li>Letter Coding</li>
+                                    <li>Number Coding</li>
+                                    <li>Symbol Substitution</li>
+                                    <li>Mixed Coding</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="blood-relations">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Blood Relations</h3>
+                                <ul class="subtopics">
+                                    <li>Family Tree</li>
+                                    <li>Generation Problems</li>
+                                    <li>Complex Relations</li>
+                                    <li>Gender Identification</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="direction-sense">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Direction Sense</h3>
+                                <ul class="subtopics">
+                                    <li>Basic Directions</li>
+                                    <li>Distance & Direction</li>
+                                    <li>Shadow Problems</li>
+                                    <li>Compass Problems</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="syllogisms">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Syllogisms</h3>
+                                <ul class="subtopics">
+                                    <li>Venn Diagrams</li>
+                                    <li>Categorical Syllogisms</li>
+                                    <li>Possibility Cases</li>
+                                    <li>Complex Statements</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="puzzles">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Puzzles & Seating Arrangements</h3>
+                                <ul class="subtopics">
+                                    <li>Linear Seating</li>
+                                    <li>Circular Seating</li>
+                                    <li>Floor Puzzles</li>
+                                    <li>Box Puzzles</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="data-sufficiency">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Data Sufficiency</h3>
+                                <ul class="subtopics">
+                                    <li>Statement Analysis</li>
+                                    <li>Sufficiency Rules</li>
+                                    <li>Mathematical DS</li>
+                                    <li>Logical DS</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="statement-assumption">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Statement & Assumption/Conclusion</h3>
+                                <ul class="subtopics">
+                                    <li>Assumption Analysis</li>
+                                    <li>Conclusion Drawing</li>
+                                    <li>Statement Evaluation</li>
+                                    <li>Logical Inference</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="cause-effect">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Cause & Effect</h3>
+                                <ul class="subtopics">
+                                    <li>Cause Identification</li>
+                                    <li>Effect Analysis</li>
+                                    <li>Chain of Events</li>
+                                    <li>Independent Events</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="analogies">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Analogies</h3>
+                                <ul class="subtopics">
+                                    <li>Word Analogies</li>
+                                    <li>Number Analogies</li>
+                                    <li>Letter Analogies</li>
+                                    <li>Mixed Analogies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="odd-one-out">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Odd One Out</h3>
+                                <ul class="subtopics">
+                                    <li>Number Series</li>
+                                    <li>Letter Series</li>
+                                    <li>Word Classification</li>
+                                    <li>General Classification</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="logical">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="non-verbal">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Non-verbal Reasoning</h3>
+                                <ul class="subtopics">
+                                    <li>Pattern Completion</li>
+                                    <li>Figure Series</li>
+                                    <li>Mirror Images</li>
+                                    <li>Water Images</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verbal Ability Section -->
+            <div class="section verbal">
+                <div class="section-header">
+                    <div class="section-icon">📚</div>
+                    <div class="section-title">
+                        <h2>Verbal Ability</h2>
+                        <p>Enhance language skills and communication proficiency</p>
+                    </div>
+                    <div class="section-progress">
+                        <div class="progress-circle" id="verbalProgress">0%</div>
+                        <div class="progress-text">Progress</div>
+                    </div>
+                </div>
+                
+                <div class="topics-grid">
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="reading-comprehension">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Reading Comprehension</h3>
+                                <ul class="subtopics">
+                                    <li>Main Idea & Theme</li>
+                                    <li>Supporting Details</li>
+                                    <li>Inference & Conclusion</li>
+                                    <li>Author's Tone & Style</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="synonyms-antonyms">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Synonyms & Antonyms</h3>
+                                <ul class="subtopics">
+                                    <li>Word Meanings</li>
+                                    <li>Contextual Usage</li>
+                                    <li>Root Words</li>
+                                    <li>Prefix & Suffix</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="sentence-completion">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Sentence Completion</h3>
+                                <ul class="subtopics">
+                                    <li>Context Clues</li>
+                                    <li>Logical Flow</li>
+                                    <li>Grammar Rules</li>
+                                    <li>Vocabulary Usage</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="para-jumbles">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Para Jumbles & Correction</h3>
+                                <ul class="subtopics">
+                                    <li>Sentence Ordering</li>
+                                    <li>Coherence & Flow</li>
+                                    <li>Error Spotting</li>
+                                    <li>Grammar Correction</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="cloze-test">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Cloze Test</h3>
+                                <ul class="subtopics">
+                                    <li>Context Understanding</li>
+                                    <li>Vocabulary Skills</li>
+                                    <li>Grammar Application</li>
+                                    <li>Logical Reasoning</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="idioms-phrases">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Idioms & Phrases</h3>
+                                <ul class="subtopics">
+                                    <li>Common Idioms</li>
+                                    <li>Phrasal Verbs</li>
+                                    <li>Contextual Usage</li>
+                                    <li>Figurative Language</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="one-word-substitutions">
+                            </div>
+                            <div class="topic-content">
+                                <h3>One-word Substitutions</h3>
+                                <ul class="subtopics">
+                                    <li>Precise Vocabulary</li>
+                                    <li>Definition Matching</li>
+                                    <li>Contextual Fit</li>
+                                    <li>Advanced Words</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topic-card" data-section="verbal">
+                        <div class="topic-header">
+                            <div class="checkbox-container">
+                                <input type="checkbox" class="checkbox" id="active-passive">
+                            </div>
+                            <div class="topic-content">
+                                <h3>Active & Passive Voice</h3>
+                                <ul class="subtopics">
+                                    <li>Voice Conversion</li>
+                                    <li>Tense Considerations</li>
+                                    <li>Auxiliary Verbs</li>
+                                    <li>Complex Sentences</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration">
+        🎉 Great job! Topic completed! 🎉
+    </div>
+
+    <script>
+        // Load saved progress
+        function loadProgress() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            checkboxes.forEach(checkbox => {
+                const saved = localStorage.getItem(checkbox.id);
+                if (saved === 'true') {
+                    checkbox.checked = true;
+                    checkbox.closest('.topic-card').classList.add('completed');
+                }
+            });
+            updateProgress();
+        }
+
+        // Save progress
+        function saveProgress(checkboxId, isChecked) {
+            localStorage.setItem(checkboxId, isChecked.toString());
+        }
+
+        // Reset all progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This action cannot be undone.')) {
+                localStorage.clear();
+                const checkboxes = document.querySelectorAll('.checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.closest('.topic-card').classList.remove('completed');
+                });
+                updateProgress();
+                showMessage('Progress reset successfully! 🔄');
+            }
+        }
+
+        // Update progress displays
+        function updateProgress() {
+            const sections = ['quantitative', 'logical', 'verbal'];
+            let totalCompleted = 0;
+            let totalTopics = 0;
+
+            sections.forEach(section => {
+                const sectionCheckboxes = document.querySelectorAll(`[data-section="${section}"] .checkbox`);
+                const completedInSection = Array.from(sectionCheckboxes).filter(cb => cb.checked).length;
+                const totalInSection = sectionCheckboxes.length;
+                
+                totalCompleted += completedInSection;
+                totalTopics += totalInSection;
+
+                const progressPercent = totalInSection > 0 ? Math.round((completedInSection / totalInSection) * 100) : 0;
+                const progressElement = document.getElementById(`${section}Progress`);
+                if (progressElement) {
+                    progressElement.textContent = `${progressPercent}%`;
+                }
+            });
+
+            // Update overall progress
+            const overallPercent = totalTopics > 0 ? Math.round((totalCompleted / totalTopics) * 100) : 0;
+            document.getElementById('overallProgress').textContent = `${overallPercent}%`;
+            document.getElementById('completedTopics').textContent = totalCompleted;
+            document.getElementById('totalTopics').textContent = totalTopics;
+
+            // Check for completion milestones
+            if (totalCompleted > 0 && totalCompleted % 5 === 0) {
+                showMilestone(totalCompleted);
+            }
+        }
+
+        // Show celebration message
+        function showCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.classList.add('show', 'bounce');
+            
+            setTimeout(() => {
+                celebration.classList.remove('show', 'bounce');
+            }, 2000);
+        }
+
+        // Show milestone achievement
+        function showMilestone(completed) {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = `🌟 Milestone Achieved!<br>${completed} topics completed! 🌟`;
+            celebration.classList.add('show', 'bounce');
+            
+            setTimeout(() => {
+                celebration.classList.remove('show', 'bounce');
+                celebration.innerHTML = '🎉 Great job! Topic completed! 🎉';
+            }, 3000);
+        }
+
+        // Show custom message
+        function showMessage(message) {
+            const celebration = document.getElementById('celebration');
+            celebration.innerHTML = message;
+            celebration.classList.add('show');
+            
+            setTimeout(() => {
+                celebration.classList.remove('show');
+                celebration.innerHTML = '🎉 Great job! Topic completed! 🎉';
+            }, 2000);
+        }
+
+        // Add event listeners to checkboxes
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+
+            const checkboxes = document.querySelectorAll('.checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const topicCard = this.closest('.topic-card');
+                    
+                    if (this.checked) {
+                        topicCard.classList.add('completed');
+                        showCelebration();
+                    } else {
+                        topicCard.classList.remove('completed');
+                    }
+                    
+                    saveProgress(this.id, this.checked);
+                    updateProgress();
+                });
+            });
+
+            // Add click event to topic cards (excluding checkbox area)
+            const topicCards = document.querySelectorAll('.topic-card');
+            topicCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't toggle if click is on checkbox or its container
+                    if (!e.target.matches('.checkbox') && !e.target.closest('.checkbox-container')) {
+                        const checkbox = this.querySelector('.checkbox');
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+        });
+
+        // Motivational quotes rotation
+        const motivationalQuotes = [
+            "Success is not final, failure is not fatal: it is the courage to continue that counts. Every topic you master brings you closer to your dream job! 💪",
+            "The expert in anything was once a beginner. Keep practicing, and you'll ace every aptitude test! 🚀",
+            "Progress, not perfection. Each checkbox you tick is a step toward your career goals! ⭐",
+            "Believe in yourself and all that you are. You are capable of achieving greatness! 🌟",
+            "Success is the sum of small efforts repeated day in and day out. Keep going! 💯"
+        ];
+
+        // Rotate motivational quote every 10 seconds
+        let quoteIndex = 0;
+        setInterval(() => {
+            const quoteElement = document.querySelector('.motivational-quote');
+            quoteElement.style.opacity = '0';
+            
+            setTimeout(() => {
+                quoteElement.textContent = motivationalQuotes[quoteIndex];
+                quoteElement.style.opacity = '1';
+                quoteIndex = (quoteIndex + 1) % motivationalQuotes.length;
+            }, 300);
+        }, 10000);
+    </script>
+</body>
+</html>
